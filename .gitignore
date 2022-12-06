@@ -1,0 +1,14 @@
+target/
+build/
+node_modules/
+
+.settings
+.project
+.idea
+
+*.iml
+.DS_Store
+
+.metals
+.bloop
+/.bsp/
