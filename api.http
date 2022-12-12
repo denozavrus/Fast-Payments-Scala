@@ -1,0 +1,5 @@
+GET http://localhost:8081/items
+
+POST http://localhost:8081/item
+Content-Type: application/json
+{"username": "000", "sum": 1000}
