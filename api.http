@@ -2,4 +2,13 @@ GET http://localhost:8081/items
 
 POST http://localhost:8081/item
 Content-Type: application/json
-{"username": "000", "sum": 1000}
+
+{"username": "AAA", "sum": 1000}
+
+###
+POST http://localhost:8081/item
+Content-Type: application/json
+
+{"username": "AAB", "sum": 300}
+
+GET http://localhost:8081/items
