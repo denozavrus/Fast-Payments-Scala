@@ -5,7 +5,7 @@ import FastPayments.models._
 import scala.concurrent.Future
 
 trait CheckRepositary {
-  def list(): Future[List[Account]]
+  def list(): Future[Seq[Account]]
   def get(id: UUID): Future[Account]
   def create(item: AddAccount): Future[Account]
   def update(item: UpdateAccount): Future[Option[Account]]

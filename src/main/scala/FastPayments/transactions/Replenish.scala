@@ -1,4 +1,4 @@
-package transactions
+package FastPayments.transactions
 
 import FastPayments.models.Account
 
