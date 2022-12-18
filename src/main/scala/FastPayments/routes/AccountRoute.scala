@@ -15,7 +15,7 @@ class AccountRoute(repository: CheckRepositary) extends FailFastCirceSupport {
         complete(list)
       } ~
       path("account") {
-        (post & entity(as[AddAccount])) { newItem =>
+        (post & entity(as[AddAccount])) {newItem =>
           complete(repository.create(newItem))
         }
       } ~

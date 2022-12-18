@@ -18,6 +18,7 @@ object PaymentsApp extends App with FailFastCirceSupport {
   implicit val system: ActorSystem = ActorSystem("PaymentsApp")
   implicit val ec = system.dispatcher
   val repository = new CheckRepositaryMutable
+  println(repository.list())
   val helloRoute = new HelloRoute().route
   val accountRoute = new AccountRoute(repository).route
   Http().newServerAt("0.0.0.0", port=8081).bind(helloRoute ~ accountRoute)
