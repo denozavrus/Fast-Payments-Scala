@@ -25,6 +25,7 @@ lazy val root = (project in file("."))
         "com.typesafe.slick" %% "slick" % slickVersion,
         "com.typesafe.slick" %% "slick-hikaricp" % slickVersion,
         "org.postgresql" % "postgresql" % postgresVersion,
+        "io.spray" %%  "spray-json" % "1.3.6",
 
         "ch.qos.logback" % "logback-classic" % "1.2.3"
     )

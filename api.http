@@ -1,14 +1,47 @@
-GET http://localhost:8081/items
+GET http://localhost:8081/accounts
 
-POST http://localhost:8081/item
+###
+POST http://localhost:8081/account
 Content-Type: application/json
 
 {"username": "AAA", "sum": 1000}
 
 ###
-POST http://localhost:8081/item
+POST http://localhost:8081/account
 Content-Type: application/json
 
-{"username": "AAB", "sum": 300}
+{"username": "AAB", "sum": 5000}
 
-GET http://localhost:8081/items
+###
+GET http://localhost:8081/accounts
+
+###
+PUT http://localhost:8081/replenish
+Content-Type: application/json
+{
+    "id": "bd56db81-dd27-40b7-93cc-231cd08bd45f",
+    "amount": 2000
+}
+
+###
+GET http://localhost:8081/accounts
+
+###
+PUT http://localhost:8081/withdraw
+Content-Type: application/json
+{
+    "id": "bd56db81-dd27-40b7-93cc-231cd08bd45f",
+    "amount": 1000
+}
+
+###
+GET http://localhost:8081/accounts
+
+###
+PUT http://localhost:8081/transfer
+Content-Type: application/json
+{
+    "from": "d17a5c9c-3370-4c87-8fef-80e1bef2b8a6",
+    "to": "bd56db81-dd27-40b7-93cc-231cd08bd45f",
+    "amount": 3000
+}

@@ -20,13 +20,17 @@ class CheckRepositaryMutable(implicit val ec: ExecutionContext) extends CheckRep
 
   override def update(update: UpdateAccount): Future[Option[Account]] = Future {
     checks.get(update.id).map { item =>
-      val updated = item.copy(username =
-        update.username match
+
+      val updated = item.copy(
+        username = update.username match
         {
-          case Some(name) => update.username.toString
+          case Some(name) => name
           case None => item.username
         },
-        sum = update.sum)
+        sum = update.sum match {
+        case Some(sum) => sum
+        case None => item.sum
+      })
       checks.put(item.id, updated)
       updated
     }

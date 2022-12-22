@@ -1,14 +1,14 @@
 package FastPayments.routes
-import FastPayments.models.{AddAccount, UpdateAccount}
-import FastPayments.repositary.{CheckRepositary, CheckRepositaryMutable}
+import FastPayments.models.{AddAccount, ReplenishItem, TransferItem, UpdateAccount, WithdrawItem}
+import FastPayments.repositary.{AccountRepositoryDb, CheckRepositary, CheckRepositaryMutable}
 import akka.actor.ActorSystem
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.Directives._
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
 import io.circe.generic.auto._
+import spray.json._
 
-
-class AccountRoute(repository: CheckRepositary) extends FailFastCirceSupport {
+class AccountRoute(repository: AccountRepositoryDb) extends FailFastCirceSupport {
   def route: Route =
       (path("accounts") & get) {
         val list = repository.list()
@@ -33,5 +33,20 @@ class AccountRoute(repository: CheckRepositary) extends FailFastCirceSupport {
         delete {
           complete(repository.delete(id))
         }
-      }
+      } ~
+      path("replenish"){
+        (put & entity(as[ReplenishItem])) { AccInfo =>
+          complete(repository.Replenish(AccInfo))
+        }
+      } ~
+        path("withdraw") {
+          (put & entity(as[WithdrawItem])) { AccInfo =>
+            complete(repository.Withdraw(AccInfo))
+          }
+        } ~
+        path("transfer") {
+          (put & entity(as[TransferItem])) { AccInfo =>
+            complete(repository.Transfer(AccInfo))
+          }
+        }
 }
