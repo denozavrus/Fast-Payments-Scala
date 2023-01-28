@@ -16,8 +16,7 @@ class AccountRepositoryDb(implicit val ec: ExecutionContext, db: Database) exten
 
   override def create(add: AddAccount): Future[Account] = {
     val item = Account(username = add.username, sum = add.sum)
-    for
-    {
+    for {
       _ <- db.run(AccountTable += item)
       res <- get(item.id)
     } yield res
@@ -35,10 +34,10 @@ class AccountRepositoryDb(implicit val ec: ExecutionContext, db: Database) exten
       case (Some(sum), Some(username)) => query.map(a => (a.sum, a.username)).update((sum, username))
       case (Some(sum), None) => query.map(a => a.sum).update(sum)
       case (None, Some(username)) => query.map(a => a.username).update(username)
-//      case _ => query
+      //      case _ => query
     }
 
-    db.run (updateQuery)
+    db.run(updateQuery)
 
     find(update.id)
   }
@@ -46,36 +45,40 @@ class AccountRepositoryDb(implicit val ec: ExecutionContext, db: Database) exten
   override def get(id: UUID): Future[Account] = {
     db.run(AccountTable.filter(_.id === id).result.head)
   }
+
   override def delete(id: UUID): Future[Unit] = Future {
     db.run(AccountTable.filter(_.id === id).delete).map(_ => ())
   }
 
   override def Replenish(replenishItem: ReplenishItem): Future[Option[Account]] = {
     for {
-        balance <- db.run (AccountTable.filter(_.id === replenishItem.id).map(x => x.sum).result.headOption)
-        _ = balance.map{balance =>
-          db.run {
-            AccountTable.filter(_.id === replenishItem.id).map(x => x.sum).update(balance + replenishItem.amount)
-          }
-        }.getOrElse("Такой элемент не найден")
+      balance <- db.run(AccountTable.filter(_.id === replenishItem.id).map(x => x.sum).result.headOption)
+      _ = balance.map { balance =>
+        db.run {
+          AccountTable.filter(_.id === replenishItem.id).map(x => x.sum).update(balance + replenishItem.amount)
+        }
+      }.getOrElse("Такой элемент не найден")
 
-        res <- find(replenishItem.id)
+      res <- find(replenishItem.id)
     } yield res
   }
 
-  override def Withdraw(withdrawItem: WithdrawItem): Future[Option[Account]] = {
+  override def withdraw(withdrawItem: WithdrawItem): Future[Either[String, Account]] = {
     for {
       balance <- db.run(AccountTable.filter(_.id === withdrawItem.id).map(x => x.sum).result.headOption)
-      _ = balance.map{
-        case balance if balance >= withdrawItem.amount =>
+      either: Right[Int] <- balance match {
+        case Some(balance) if balance >= withdrawItem.amount =>
           db.run {
             AccountTable.filter(_.id === withdrawItem.id).map(x => x.sum).update(balance - withdrawItem.amount)
-          }
-        case balance if balance < withdrawItem.amount => "Недостаточно средств"
+          }.map(i => Right(i))
+        case Some(balance) if balance < withdrawItem.amount => Future.successful(Left("Недостаточно средств"))
+        case None => Future.successful(Left("Такой элемент не найден"))
+      }
 
-      }.getOrElse("Такой элемент не найден")
-
-      res <- find(withdrawItem.id)
+      res <- either match {
+        case Right(_) => find(withdrawItem.id).map(maybeAccount => maybeAccount.map(account => Right(account)).getOrElse(Left("No such account")))
+        case left: Left[String] => Future.successful (left)
+      }
     } yield res
   }
 
