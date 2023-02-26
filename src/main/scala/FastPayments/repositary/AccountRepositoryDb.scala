@@ -50,57 +50,78 @@ class AccountRepositoryDb(implicit val ec: ExecutionContext, db: Database) exten
     db.run(AccountTable.filter(_.id === id).delete).map(_ => ())
   }
 
-  override def Replenish(replenishItem: ReplenishItem): Future[Option[Account]] = {
+  override def replenish(replenishItem: ReplenishItem): Future[Either[String, Account]] = {
     for {
       balance <- db.run(AccountTable.filter(_.id === replenishItem.id).map(x => x.sum).result.headOption)
-      _ = balance.map { balance =>
-        db.run {
-          AccountTable.filter(_.id === replenishItem.id).map(x => x.sum).update(balance + replenishItem.amount)
-        }
-      }.getOrElse("Такой элемент не найден")
+      either: Either[String, Account] <- balance match {
+        case Some(balance) =>
+          db.run {
+            AccountTable.filter(_.id === replenishItem.id).map(x => x.sum).update(balance + replenishItem.amount)
+          }
+        case None => Future.successful(Left("Такой элемент не найден"))
+      }
 
-      res <- find(replenishItem.id)
+      res <- either match {
+        case Right(_) => find(replenishItem.id).map(maybeAccount => maybeAccount.map(account => Right(account)).getOrElse(Left("No such account")))
+        case left: Left[String, _] => Future.successful(left)
+      }
     } yield res
   }
 
   override def withdraw(withdrawItem: WithdrawItem): Future[Either[String, Account]] = {
     for {
       balance <- db.run(AccountTable.filter(_.id === withdrawItem.id).map(x => x.sum).result.headOption)
-      either: Right[Int] <- balance match {
+      either: Either[String, Account] <- balance match {
         case Some(balance) if balance >= withdrawItem.amount =>
           db.run {
             AccountTable.filter(_.id === withdrawItem.id).map(x => x.sum).update(balance - withdrawItem.amount)
-          }.map(i => Right(i))
+          }
         case Some(balance) if balance < withdrawItem.amount => Future.successful(Left("Недостаточно средств"))
         case None => Future.successful(Left("Такой элемент не найден"))
       }
 
       res <- either match {
         case Right(_) => find(withdrawItem.id).map(maybeAccount => maybeAccount.map(account => Right(account)).getOrElse(Left("No such account")))
-        case left: Left[String] => Future.successful (left)
+        case Left: Left[String, _] => Future.successful (Left)
       }
     } yield res
   }
 
-  override def Transfer(transferItem: TransferItem): Future[Seq[Account]] = {
+  override def transfer(transferItem: TransferItem): Future[Either[String, Seq[Account]]] = {
+//    for {
+//      balance <- db.run(AccountTable.filter(_.id === transferItem.from).map(x => x.sum).result.headOption)
+//      either: Either[String, Seq[Account]] <- balance match {
+//        case Some(balance) if balance >= transferItem.amount =>
+//            db.run {
+//              AccountTable.filter(_.id === transferItem.from).map(x => x.sum).update(balance - transferItem.amount)
+//            }
+//            replenish(ReplenishItem(transferItem.to, transferItem.amount))
+//
+//        case Some(balance) if balance < transferItem.amount => Future.successful(Left("Недостаточно средств"))
+//        case None => Future.successful(Left("Такой элемент не найден"))
+//      }
+//
+//      acc_to: Future[Account] = find(transferItem.to).map(_.getOrElse(Account(username = "Not found")))
+//      acc_from: Future[Account] = find(transferItem.from).map(_.getOrElse(Account(username = "Not found")))
+//      res <- Future.sequence(Seq(acc_to, acc_from))
+//    } yield res
+
     for {
       balance <- db.run(AccountTable.filter(_.id === transferItem.from).map(x => x.sum).result.headOption)
-      status = balance.map {
-        case balance if balance >= transferItem.amount =>
+      either: Either[String, Account] <- balance match {
+        case Some(balance) if balance >= transferItem.amount =>
           db.run {
             AccountTable.filter(_.id === transferItem.from).map(x => x.sum).update(balance - transferItem.amount)
           }
-        case balance if balance < transferItem.amount => "Недостаточно средств"
-      }.getOrElse("Такой элемент не найден")
-
-      _ = status match {
-        case _: String => None
-        case _ => Replenish(ReplenishItem(transferItem.to, transferItem.amount))
+        case Some(balance) if balance < transferItem.amount => Future.successful(Left("Недостаточно средств"))
+        case None => Future.successful(Left("Такой элемент не найден"))
       }
-      acc_to: Future[Account] = find(transferItem.to).map(_.getOrElse(Account(username = "Not found")))
-      acc_from: Future[Account] = find(transferItem.from).map(_.getOrElse(Account(username = "Not found")))
-      res <- Future.sequence(Seq(acc_to, acc_from))
-    } yield res
-  }
+
+      res <- either match {
+        case Right(_) => Future.sequence(find(transferItem.from).map(maybeAccount => maybeAccount.map(account => Right(account)).getOrElse(Left("No such account"))),
+          replenish(ReplenishItem(transferItem.to, transferItem.amount)) )
+        case Left: Left[String, _] => Future.successful(Left)
+    }
+  } yield res
 }
 

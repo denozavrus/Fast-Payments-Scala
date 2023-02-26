@@ -8,7 +8,7 @@ import java.util.UUID
 import scala.concurrent.Future
 
 trait TransactionTypes {
-  def Replenish(replenishItem: ReplenishItem): Future[Option[Account]]
-  def Withdraw(withdrawItem: WithdrawItem): Future[Option[Account]]
-  def Transfer(transferItem: TransferItem): Future[Seq[Account]]
+  def replenish(replenishItem: ReplenishItem): Future[Either[String, Account]]
+  def withdraw(withdrawItem: WithdrawItem): Future[Either[String, Account]]
+  def transfer(transferItem: TransferItem): Future[Either[String, Seq[Account]]]
 }
