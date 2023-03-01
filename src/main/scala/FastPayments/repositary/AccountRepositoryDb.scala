@@ -50,7 +50,7 @@ class AccountRepositoryDb(implicit val ec: ExecutionContext, db: Database) exten
     db.run(AccountTable.filter(_.id === id).delete).map(_ => ())
   }
 
-  override def replenish(replenishItem: ReplenishItem): Future[Either[String, Account]] = {
+  override def Replenish(replenishItem: ReplenishItem): Future[Either[String, Account]] = {
     for {
       balance <- db.run(AccountTable.filter(_.id === replenishItem.id).map(x => x.sum).result.headOption)
       either: Either[String, Account] <- balance match {
@@ -68,7 +68,7 @@ class AccountRepositoryDb(implicit val ec: ExecutionContext, db: Database) exten
     } yield res
   }
 
-  override def withdraw(withdrawItem: WithdrawItem): Future[Either[String, Account]] = {
+  override def Withdraw(withdrawItem: WithdrawItem): Future[Either[String, Account]] = {
     for {
       balance <- db.run(AccountTable.filter(_.id === withdrawItem.id).map(x => x.sum).result.headOption)
       either: Either[String, Account] <- balance match {
@@ -87,9 +87,9 @@ class AccountRepositoryDb(implicit val ec: ExecutionContext, db: Database) exten
     } yield res
   }
 
-  override def transfer(transferItem: TransferItem): Future[Either[String, TransferResponse]] = {
+  override def Transfer(transferItem: TransferItem): Future[Either[String, TransferResponse]] = {
     for {
-      withdraw_res <- withdraw(WithdrawItem(transferItem.from, transferItem.amount))
+      withdraw_res <- Withdraw(WithdrawItem(transferItem.from, transferItem.amount))
       val res <- withdraw_res match {
       case Right (right) =>
       case Left (left) => Future.successful(left)
