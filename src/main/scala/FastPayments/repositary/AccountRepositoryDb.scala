@@ -82,20 +82,23 @@ class AccountRepositoryDb(implicit val ec: ExecutionContext, db: Database) exten
 
       res <- either match {
         case Right(_) => find(withdrawItem.id).map(maybeAccount => maybeAccount.map(account => Right(account)).getOrElse(Left("No such account")))
-        case Left: Left[String, _] => Future.successful (Left)
+        case Left: Left[String, _] => Future.successful(Left)
       }
     } yield res
   }
 
-  override def Transfer(transferItem: TransferItem): Future[Either[String, TransferResponse]] = {
+  override def Transfer (transferItem: TransferItem): Future[Either[String, TransferResponse]] = {
     for {
-      withdraw_res <- Withdraw(WithdrawItem(transferItem.from, transferItem.amount))
-      val res <- withdraw_res match {
-      case Right (right) =>
-      case Left (left) => Future.successful(left)
+      withdrawRes <- Withdraw(WithdrawItem(transferItem.from, transferItem.amount))
+      result <- withdrawRes match {
+        case Right(rightW) => Replenish(ReplenishItem(transferItem.to, transferItem.amount)).map{
+          replenishRes => replenishRes.map {rightR =>
+            TransferResponse (rightW, rightR)
+          }
+        }
+        case Left(error) => Future.successful(Left(error))
       }
-    }
+    } yield result
   }
-
 }
 
