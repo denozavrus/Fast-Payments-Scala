@@ -9,8 +9,8 @@ object CashbackDb {
     val name = column[String]("name")
     val percent = column[Float]("percent")
 
-    override def * = (id, username, sum) <> ((Account.apply _).tupled, Account.unapply _)
+    override def * = (id, name, percent) <> ((CategoryObject.apply _).tupled, CategoryObject.unapply _)
   }
 
-  val AccountTable = TableQuery[AccountTable]
+  val AccountTable = TableQuery[CategoryTable]
 }

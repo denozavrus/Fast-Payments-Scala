@@ -50,48 +50,48 @@ class AccountRepositoryDb(implicit val ec: ExecutionContext, db: Database) exten
     db.run(AccountTable.filter(_.id === id).delete).map(_ => ())
   }
 
-  override def Replenish(replenishItem: ReplenishItem): Future[Either[String, Account]] = {
+  override def replenish(replenishItem: ReplenishItem): Future[Either[String, Account]] = {
     for {
       balance <- db.run(AccountTable.filter(_.id === replenishItem.id).map(x => x.sum).result.headOption)
-      either: Either[String, Account] <- balance match {
+      either: Either[String, Int] <- balance match {
         case Some(balance) =>
           db.run {
             AccountTable.filter(_.id === replenishItem.id).map(x => x.sum).update(balance + replenishItem.amount)
-          }
+          }.map(Right(_))
         case None => Future.successful(Left("Такой элемент не найден"))
       }
 
       res <- either match {
         case Right(_) => find(replenishItem.id).map(maybeAccount => maybeAccount.map(account => Right(account)).getOrElse(Left("No such account")))
-        case left: Left[String, _] => Future.successful(left)
+        case Left(error) => Future.successful(error)
       }
     } yield res
   }
 
-  override def Withdraw(withdrawItem: WithdrawItem): Future[Either[String, Account]] = {
+  override def withdraw(withdrawItem: WithdrawItem): Future[Either[String, Account]] = {
     for {
       balance <- db.run(AccountTable.filter(_.id === withdrawItem.id).map(x => x.sum).result.headOption)
-      either: Either[String, Account] <- balance match {
+      either: Either[String, Int] <- balance match {
         case Some(balance) if balance >= withdrawItem.amount =>
           db.run {
             AccountTable.filter(_.id === withdrawItem.id).map(x => x.sum).update(balance - withdrawItem.amount)
-          }
+          }.map(Right(_))
         case Some(balance) if balance < withdrawItem.amount => Future.successful(Left("Недостаточно средств"))
         case None => Future.successful(Left("Такой элемент не найден"))
       }
 
       res <- either match {
         case Right(_) => find(withdrawItem.id).map(maybeAccount => maybeAccount.map(account => Right(account)).getOrElse(Left("No such account")))
-        case Left: Left[String, _] => Future.successful(Left)
+        case Left(error) => Future.successful(error)
       }
     } yield res
   }
 
-  override def Transfer (transferItem: TransferItem): Future[Either[String, TransferResponse]] = {
+  override def transfer(transferItem: TransferItem): Future[Either[String, TransferResponse]] = {
     for {
-      withdrawRes <- Withdraw(WithdrawItem(transferItem.from, transferItem.amount))
+      withdrawRes <- withdraw(WithdrawItem(transferItem.from, transferItem.amount))
       result <- withdrawRes match {
-        case Right(rightW) => Replenish(ReplenishItem(transferItem.to, transferItem.amount)).map{
+        case Right(rightW) => replenish(ReplenishItem(transferItem.to, transferItem.amount)).map{
           replenishRes => replenishRes.map {rightR =>
             TransferResponse (rightW, rightR)
           }

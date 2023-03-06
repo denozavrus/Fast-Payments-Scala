@@ -36,17 +36,17 @@ class AccountRoute(repository: AccountRepositoryDb) extends FailFastCirceSupport
       } ~
       path("replenish"){
         (put & entity(as[ReplenishItem])) { AccInfo =>
-          complete(repository.Replenish(AccInfo))
+          complete(repository.replenish(AccInfo))
         }
       } ~
         path("withdraw") {
           (put & entity(as[WithdrawItem])) { AccInfo =>
-            complete(repository.Withdraw(AccInfo))
+            complete(repository.withdraw(AccInfo))
           }
         } ~
         path("transfer") {
           (put & entity(as[TransferItem])) { AccInfo =>
-            complete(repository.Transfer(AccInfo))
+            complete(repository.transfer(AccInfo))
           }
         }
 }
