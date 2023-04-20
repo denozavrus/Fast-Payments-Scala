@@ -4,6 +4,7 @@ import FastPayments.models.{Account, AddAccount, ReplenishItem, TransferItem, Tr
 import slick.jdbc.JdbcBackend.Database
 import slick.jdbc.PostgresProfile.api._
 import FastPayments.db.AccountDb._
+import FastPayments.db.CashbackDb._
 
 import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,11 +35,9 @@ class AccountRepositoryDb(implicit val ec: ExecutionContext, db: Database) exten
       case (Some(sum), Some(username)) => query.map(a => (a.sum, a.username)).update((sum, username))
       case (Some(sum), None) => query.map(a => a.sum).update(sum)
       case (None, Some(username)) => query.map(a => a.username).update(username)
-      //      case _ => query
     }
 
     db.run(updateQuery)
-
     find(update.id)
   }
 
@@ -63,7 +62,7 @@ class AccountRepositoryDb(implicit val ec: ExecutionContext, db: Database) exten
 
       res <- either match {
         case Right(_) => find(replenishItem.id).map(maybeAccount => maybeAccount.map(account => Right(account)).getOrElse(Left("No such account")))
-        case Left(error) => Future.successful(error)
+        case Left(error) => Future.successful(Left(error))
       }
     } yield res
   }
@@ -82,9 +81,19 @@ class AccountRepositoryDb(implicit val ec: ExecutionContext, db: Database) exten
 
       res <- either match {
         case Right(_) => find(withdrawItem.id).map(maybeAccount => maybeAccount.map(account => Right(account)).getOrElse(Left("No such account")))
-        case Left(error) => Future.successful(error)
+        case Left(error) => Future.successful(Left(error))
       }
     } yield res
+  }
+
+  def getCashback(catid: UUID): Future[Float] = {
+    for {
+      result <- db.run(CashbackTable.filter(_.id === catid).map(x => x.percent).result.headOption)
+      percent <- result match {
+        case Some(percent) => percent
+        case None => 1.0
+      }
+    } yield percent
   }
 
   override def transfer(transferItem: TransferItem): Future[Either[String, TransferResponse]] = {
