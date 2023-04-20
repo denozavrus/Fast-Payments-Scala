@@ -91,7 +91,7 @@ class AccountRepositoryDb(implicit val ec: ExecutionContext, db: Database) exten
       result <- db.run(CashbackTable.filter(_.id === catid).map(x => x.percent).result.headOption)
       percent <- result match {
         case Some(percent) => percent
-        case None => 1.0
+        case None => 1
       }
     } yield percent
   }
