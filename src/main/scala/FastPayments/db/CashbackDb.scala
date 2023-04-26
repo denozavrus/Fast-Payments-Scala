@@ -4,7 +4,7 @@ import slick.jdbc.PostgresProfile.api._
 import java.util.UUID
 
 object CashbackDb {
-  class CategoryTable(tag: Tag) extends Table[Category](tag, "accounts") {
+  class CategoryTable(tag: Tag) extends Table[Category](tag, "categories") {
     val id = column[UUID]("id", O.PrimaryKey)
     val name = column[String]("name")
     val percent = column[Float]("percent")

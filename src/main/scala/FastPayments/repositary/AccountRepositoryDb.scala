@@ -6,6 +6,8 @@ import slick.jdbc.PostgresProfile.api._
 import FastPayments.db.AccountDb._
 import FastPayments.db.CashbackDb._
 
+import scala.concurrent.Await
+import scala.concurrent.duration.DurationInt
 import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -89,9 +91,9 @@ class AccountRepositoryDb(implicit val ec: ExecutionContext, db: Database) exten
   def getCashback(catid: UUID): Future[Float] = {
     for {
       result <- db.run(CashbackTable.filter(_.id === catid).map(x => x.percent).result.headOption)
-      percent <- result match {
+      percent = result match {
         case Some(percent) => percent
-        case None => 1
+        case None => 0
       }
     } yield percent
   }
@@ -100,11 +102,20 @@ class AccountRepositoryDb(implicit val ec: ExecutionContext, db: Database) exten
     for {
       withdrawRes <- withdraw(WithdrawItem(transferItem.from, transferItem.amount))
       result <- withdrawRes match {
-        case Right(rightW) => replenish(ReplenishItem(transferItem.to, transferItem.amount)).map{
-          replenishRes => replenishRes.map {rightR =>
-            TransferResponse (rightW, rightR)
+        case Right(rightW) =>
+          {
+            transferItem.categoryid match {
+              case Some(cat) => replenish(ReplenishItem(transferItem.from, Await.result(getCashback(cat), 10.seconds) * transferItem.amount))
+              case None => {}
+            }
+            replenish(ReplenishItem(transferItem.to, transferItem.amount)).map {
+              replenishRes =>
+                replenishRes.map { rightR =>
+                  TransferResponse(rightW, rightR)
+                }
+            }
           }
-        }
+
         case Left(error) => Future.successful(Left(error))
       }
     } yield result

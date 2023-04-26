@@ -19,8 +19,9 @@ object PaymentsDbApp extends App with FailFastCirceSupport {
 
   new InitDB().prepare()
   val accRepository = new AccountRepositoryDb
+  val catRepository = new CategoryRepositoryDb
   val helloRoute = new HelloRoute().route
-  val accountRoute = new AccountRoute(accRepository).route
+  val accountRoute = new AccountRoute(accRepository, catRepository).route
   Http().newServerAt("0.0.0.0", port = 8081).bind(helloRoute ~ accountRoute)
 
 }
