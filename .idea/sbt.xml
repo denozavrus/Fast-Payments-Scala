@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ScalaSbtSettings">
+    <option name="customVMPath" />
+    <option name="linkedExternalProjectsSettings">
+      <SbtProjectSettings>
+        <option name="converterVersion" value="1" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/../Fast Payments/misis-scala-22-master/lite-bank/account" />
+        <option name="sbtVersion" value="1.7.2" />
+      </SbtProjectSettings>
+      <SbtProjectSettings>
+        <option name="converterVersion" value="1" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/project" />
+          </set>
+        </option>
+        <option name="sbtVersion" value="1.8.2" />
+      </SbtProjectSettings>
+      <SbtProjectSettings>
+        <option name="converterVersion" value="1" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/lite-bank/account" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/lite-bank/account" />
+            <option value="$PROJECT_DIR$/lite-bank/account/project" />
+            <option value="$PROJECT_DIR$/lite-bank/common" />
+            <option value="$PROJECT_DIR$/lite-bank/common/project" />
+          </set>
+        </option>
+        <option name="sbtVersion" value="1.7.2" />
+      </SbtProjectSettings>
+      <SbtProjectSettings>
+        <option name="converterVersion" value="1" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/lite-bank/operation" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/lite-bank/common" />
+            <option value="$PROJECT_DIR$/lite-bank/common/project" />
+            <option value="$PROJECT_DIR$/lite-bank/operation" />
+            <option value="$PROJECT_DIR$/lite-bank/operation/project" />
+          </set>
+        </option>
+        <option name="sbtVersion" value="1.7.2" />
+      </SbtProjectSettings>
+      <SbtProjectSettings>
+        <option name="converterVersion" value="1" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/lite-bank/report" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/lite-bank/account" />
+            <option value="$PROJECT_DIR$/lite-bank/account/project" />
+            <option value="$PROJECT_DIR$/lite-bank/common" />
+            <option value="$PROJECT_DIR$/lite-bank/common/project" />
+            <option value="$PROJECT_DIR$/lite-bank/report" />
+            <option value="$PROJECT_DIR$/lite-bank/report/project" />
+          </set>
+        </option>
+        <option name="sbtVersion" value="1.7.2" />
+      </SbtProjectSettings>
+    </option>
+  </component>
+</project>
