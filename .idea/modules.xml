@@ -9,8 +9,12 @@
       <module fileurl="file://$PROJECT_DIR$/lite-bank/account/.idea/modules/common-build.iml" filepath="$PROJECT_DIR$/lite-bank/account/.idea/modules/common-build.iml" group="sbt-build-modules" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/lite-bank.iml" filepath="$PROJECT_DIR$/.idea/modules/lite-bank.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/lite-bank-build.iml" filepath="$PROJECT_DIR$/.idea/modules/lite-bank-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../lite-bank-project/lite-bank/common/.idea/modules/lite-bank.common.iml" filepath="$PROJECT_DIR$/../../lite-bank-project/lite-bank/common/.idea/modules/lite-bank.common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../lite-bank-project/lite-bank/operation/.idea/modules/lite-bank.operation.iml" filepath="$PROJECT_DIR$/../../lite-bank-project/lite-bank/operation/.idea/modules/lite-bank.operation.iml" />
       <module fileurl="file://$PROJECT_DIR$/lite-bank/operation/.idea/modules/operation.iml" filepath="$PROJECT_DIR$/lite-bank/operation/.idea/modules/operation.iml" />
       <module fileurl="file://$PROJECT_DIR$/lite-bank/operation/.idea/modules/operation-build.iml" filepath="$PROJECT_DIR$/lite-bank/operation/.idea/modules/operation-build.iml" group="sbt-build-modules" />
+      <module fileurl="file://$PROJECT_DIR$/../../lite-bank-project/lite-bank/common/.idea/modules/project.common-build.iml" filepath="$PROJECT_DIR$/../../lite-bank-project/lite-bank/common/.idea/modules/project.common-build.iml" group="sbt-build-modules" />
+      <module fileurl="file://$PROJECT_DIR$/../../lite-bank-project/lite-bank/operation/.idea/modules/project.operation-build.iml" filepath="$PROJECT_DIR$/../../lite-bank-project/lite-bank/operation/.idea/modules/project.operation-build.iml" group="sbt-build-modules" />
       <module fileurl="file://$PROJECT_DIR$/lite-bank/report/.idea/modules/report.iml" filepath="$PROJECT_DIR$/lite-bank/report/.idea/modules/report.iml" />
       <module fileurl="file://$PROJECT_DIR$/lite-bank/report/.idea/modules/report-build.iml" filepath="$PROJECT_DIR$/lite-bank/report/.idea/modules/report-build.iml" group="sbt-build-modules" />
     </modules>

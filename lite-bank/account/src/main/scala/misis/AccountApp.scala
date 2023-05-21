@@ -19,7 +19,6 @@ object AccountApp extends App  {
     val accountId = ConfigFactory.load().getInt("account.id")
     val defAmount = ConfigFactory.load().getInt("account.amount")
 
-
     private val repository = new AccountRepository(accountId, defAmount)
     private val streams = new AccountStreams(repository)
 

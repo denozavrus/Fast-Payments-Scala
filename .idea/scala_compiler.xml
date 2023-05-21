@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ScalaCompilerConfiguration">
-    <profile name="sbt 1" modules="account,account_2236,account_6893,common,lite-bank,operation,operation_1105,report,report_8083" />
+    <profile name="sbt 1" modules="account,account_2236,account_6893,common,common_7380,lite-bank,lite-bank.common,lite-bank.operation,operation,operation_1105,operation_1130,report,report_8083" />
   </component>
 </project>

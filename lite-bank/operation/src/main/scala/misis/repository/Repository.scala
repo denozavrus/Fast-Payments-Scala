@@ -11,6 +11,7 @@ class Repository(streams: Streams){
 
     def transfer(transfer: TransferStart) = {
         if (transfer.value > 0) {
+
             streams.produceCommand(AccountUpdate(transfer.sourceId, -transfer.value))
             streams.produceCommand(AccountUpdate(transfer.destinationId, transfer.value))
         }
