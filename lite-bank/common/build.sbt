@@ -24,5 +24,10 @@ lazy val common = (project in file("."))
         )
     )
 
+libraryDependencies ++= Seq(
+  "org.apache.kafka" %% "kafka-streams-scala" % "2.8.1",
+  "org.apache.kafka" % "kafka-streams" % "2.8.1"
+)
+
 
 enablePlugins(JavaAppPackaging)

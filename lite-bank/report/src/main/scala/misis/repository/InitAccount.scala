@@ -16,7 +16,7 @@ class InitAccount(elastic: ElasticClient, streams: ReportStreams)(implicit syste
     implicit val commandTopicName: TopicName[AccountUpdate] = streams.simpleTopicName[AccountUpdate]
 
     Source(1 to 3)
-        .map(accountId => AccountUpdate(accountId = accountId, value = 1000, category = None, tags = None))
+        .map(accountId => AccountUpdate(sourceId = accountId, value = 1000, category = None, tags = None))
         .map(command => streams.produceCommand(command))
         .to(Sink.ignore)
         .run()
@@ -42,7 +42,7 @@ class InitAccount(elastic: ElasticClient, streams: ReportStreams)(implicit syste
     Source(0 to 1000)
         .map(_ =>
             AccountUpdate(
-                accountId = rand.nextInt(3) + 1,
+                sourceId = rand.nextInt(3) + 1,
                 value = rand.nextInt(1000) - 500,
                 category = Some(categories(rand.nextInt(categories.size))),
                 tags = Some((0 to rand.nextInt(5))

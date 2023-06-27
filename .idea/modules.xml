@@ -13,7 +13,7 @@
       <module fileurl="file://$PROJECT_DIR$/../../lite-bank-project/lite-bank/operation/.idea/modules/lite-bank.operation.iml" filepath="$PROJECT_DIR$/../../lite-bank-project/lite-bank/operation/.idea/modules/lite-bank.operation.iml" />
       <module fileurl="file://$PROJECT_DIR$/lite-bank/operation/.idea/modules/operation.iml" filepath="$PROJECT_DIR$/lite-bank/operation/.idea/modules/operation.iml" />
       <module fileurl="file://$PROJECT_DIR$/lite-bank/operation/.idea/modules/operation-build.iml" filepath="$PROJECT_DIR$/lite-bank/operation/.idea/modules/operation-build.iml" group="sbt-build-modules" />
-      <module fileurl="file://$PROJECT_DIR$/../../lite-bank-project/lite-bank/common/.idea/modules/project.common-build.iml" filepath="$PROJECT_DIR$/../../lite-bank-project/lite-bank/common/.idea/modules/project.common-build.iml" group="sbt-build-modules" />
+      <module fileurl="file://$PROJECT_DIR$/../../lite-bank-project/lite-bank/common/.idea/modules/project.common-build.iml" filepath="$PROJECT_DIR$/../../lite-bank-project/lite-bank/common/.idea/modules/project.common-build.iml" />
       <module fileurl="file://$PROJECT_DIR$/../../lite-bank-project/lite-bank/operation/.idea/modules/project.operation-build.iml" filepath="$PROJECT_DIR$/../../lite-bank-project/lite-bank/operation/.idea/modules/project.operation-build.iml" group="sbt-build-modules" />
       <module fileurl="file://$PROJECT_DIR$/lite-bank/report/.idea/modules/report.iml" filepath="$PROJECT_DIR$/lite-bank/report/.idea/modules/report.iml" />
       <module fileurl="file://$PROJECT_DIR$/lite-bank/report/.idea/modules/report-build.iml" filepath="$PROJECT_DIR$/lite-bank/report/.idea/modules/report-build.iml" group="sbt-build-modules" />
